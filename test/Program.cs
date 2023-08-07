@@ -1,68 +1,66 @@
-﻿// Задача 49: Задайте двумерный массив. Найдите элементы, у которых оба
-//  индекса чётные, и замените эти элементы на их квадраты.
-
-// Например, изначально массив
-//  выглядел вот так:
-// 1 4 7 2
-// 5 9 2 3
-// 8 4 2 4
-
-// Новый массив будет выглядеть 
-// вот так:
-// 1 4 7 2
-// 5 81 2 9
-// 8 4 2 4
-
-void NewArray(int[,] array)
+﻿void PrintArray3D(int[,,] array3D)
 {
-    int[,] newArray = new int[array.GetLength(0), array.GetLength(1)];
-    for (int i = 0; i < array.GetLength(0); i++)
+    for (int k = 0; k < array3D.GetLength(2); k++)
     {
-        for (int j = 0; j < array.GetLength(1); j++)
+        for (int i = 0; i < array3D.GetLength(0); i++)
         {
-            if (i % 2 == 0 & j % 2 == 0) newArray[i, j] = array[i, j] * array[i, j];
-            else newArray[i, j] = array[i, j];
-            Console.Write($"{newArray[i, j]}\t", -3);
+            for (int j = 0; j < array3D.GetLength(1); j++)
+            {
+                Console.Write($"{array3D[i, j, k]}({i},{j},{k}) ");
+            }
+            Console.WriteLine();
         }
-        Console.WriteLine();
     }
 }
 
-
-void PrintTwoDimensionalArray(int[,] array)
+int[,,] GenerateRandomArray3D(int rowSize, int colSize, int zSize)
 {
-    for (int i = 0; i < array.GetLength(0); i++)
+    // генерим одномерный массив случайных неповторяющихся чисел, из которого будем заполнять трехмерный
+    int[] randomArray1D = new int[rowSize * colSize * zSize];
+    int num;
+    for (int n = 0; n < randomArray1D.Length; n++)
     {
-        for (int j = 0; j < array.GetLength(1); j++)
+        num = new Random().Next(1, 10);
+        if (randomArray1D.Contains(num))
         {
-            Console.Write($"{array[i, j]}\t", -3);
+            n--;
         }
-        Console.WriteLine();
-    }
-}
-
-int[,] GenerateTwoDimensionalArray(int rows, int columns, int startValue, int finishValue)
-{
-    int[,] workingArray = new int[rows, columns];
-    for (int i = 0; i < workingArray.GetLength(0); i++)
-    {
-        for (int j = 0; j < workingArray.GetLength(1); j++)
+        else
         {
-            workingArray[i, j] = new Random().Next(startValue, finishValue + 1);
+            randomArray1D[n] = num;
         }
     }
-    return workingArray;
+    // создаем трехмерный массив и заполняем его из одномерного
+    int[,,] randomArray3D = new int[rowSize, colSize, zSize];
+    int index = 0;
+    for (int i = 0; i < rowSize; i++)
+    {
+        for (int j = 0; j < colSize; j++)
+        {
+            for (int k = 0; k < zSize; k++)
+            {
+                randomArray3D[i, j, k] = randomArray1D[index];
+                index++;
+            }
+        }
+    }
+    return randomArray3D;
 }
 
-int GetInput(string text)
+int PromptNumber(string text)
 {
     Console.Write(text);
     return Convert.ToInt32(Console.ReadLine());
 }
 
-int m = GetInput("Введите количество строк массива: ");
-int n = GetInput("Введите количество столбцов массива: ");
-int[,] array = GenerateTwoDimensionalArray(m, n, 1, 9); //будем от 1 до 9
-PrintTwoDimensionalArray(array);
-Console.WriteLine();
-NewArray(array);
+Console.WriteLine("Введите размеры трехмерного массива.");
+int y = PromptNumber("Количество строк массива: ");
+int x = PromptNumber("Количество столбцов массива: ");
+int z = PromptNumber("Глубина массива: ");
+// if (y * x * z > 90)
+// {
+//     Console.WriteLine("Размер массива больше диапазона возможных чисел.");
+//     return;
+// }
+int[,,] mas3D = GenerateRandomArray3D(y, x, z);
+PrintArray3D(mas3D);
